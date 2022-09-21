@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import { has } from 'lodash';
 import * as yup from 'yup';
 
 import { setFormHelperText } from '../../utils/validation';
+import { createFormSuccessAction } from "../../store/actions/formActions";
 
 import './styles.css';
 
 export default function Main() {
-    const history = useHistory();
+    const routeHistory = useHistory();
+    const dispatch = useDispatch();
     const validationSchema = yup.object({
         name: yup.string().required('Name is required.'),
         phone: yup.number().required('Phone is required.'),
@@ -18,8 +21,11 @@ export default function Main() {
     })
     .defined();
     const { control, errors, register, triggerValidation, getValues } = useForm({
-        validationSchema,
+        // validationSchema,
     });
+    const formReducer = useSelector(
+        (state) => state.formReducer,
+    );
 
     const handleValidate = async () => {
         return triggerValidation();
@@ -29,8 +35,7 @@ export default function Main() {
         const isValidForm = await handleValidate();
         if (isValidForm) {
             const data = getValues();
-            console.log(11111, data);
-            history.push('/location')
+            dispatch(createFormSuccessAction(data));
         }
     };
 
@@ -52,7 +57,13 @@ export default function Main() {
                 name
             )}
         />
-    )
+    );
+
+    useEffect(() => {
+        if (formReducer.create.apiSuccess) {
+            routeHistory.push('/location')
+        }
+    }, [formReducer.create.apiSuccess, routeHistory]);
 
     return (
         <div className="container">
