@@ -1,6 +1,11 @@
 import { createForm } from '../../services/formService';
 import { FormActionTypeEnum } from '../../enums/actions';
 
+export const updateFormStateAction = (payload) => ({
+    type: FormActionTypeEnum.UPDATE_STATE,
+    payload,
+});
+
 export const createFormRequestAction = () => ({
     type: FormActionTypeEnum.CREATE_REQUEST,
 });

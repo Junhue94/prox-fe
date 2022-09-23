@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { Button, TextField } from '@material-ui/core';
+import React from 'react';
+import { Button, TextField, Typography } from '@material-ui/core';
 import { Controller, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import { has } from 'lodash';
 import * as yup from 'yup';
 
 import { setFormHelperText } from '../../utils/validation';
-import { createFormSuccessAction } from "../../store/actions/formActions";
+import { updateFormStateAction } from "../../store/actions/formActions";
 
 import './styles.css';
 
@@ -21,11 +21,8 @@ export default function Main() {
     })
     .defined();
     const { control, errors, register, triggerValidation, getValues } = useForm({
-        // validationSchema,
+        validationSchema,
     });
-    const formReducer = useSelector(
-        (state) => state.formReducer,
-    );
 
     const handleValidate = async () => {
         return triggerValidation();
@@ -35,7 +32,8 @@ export default function Main() {
         const isValidForm = await handleValidate();
         if (isValidForm) {
             const data = getValues();
-            dispatch(createFormSuccessAction(data));
+            dispatch(updateFormStateAction(data));
+            routeHistory.push('/location')
         }
     };
 
@@ -59,14 +57,9 @@ export default function Main() {
         />
     );
 
-    useEffect(() => {
-        if (formReducer.create.apiSuccess) {
-            routeHistory.push('/location')
-        }
-    }, [formReducer.create.apiSuccess, routeHistory]);
-
     return (
         <div className="container">
+            <Typography variant="h3">User Information</Typography>
             <form>
                 {renderTextField("Name", "name")}
                 {renderTextField("Phone", "phone")}

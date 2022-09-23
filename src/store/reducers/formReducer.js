@@ -12,6 +12,11 @@ export const initialState = {
     name: '',
     phone: '',
     email: '',
+    addressLine1: '',
+    addressLine2: '',
+    state: '',
+    country: '',
+    postal_code: '',
 };
 
 export const formReducer = (
@@ -20,6 +25,11 @@ export const formReducer = (
 ) => {
     const { type, payload } = action;
     switch (type) {
+        case FormActionTypeEnum.UPDATE_STATE:
+            return {
+                ...state,
+                ...payload,
+            };
         case FormActionTypeEnum.CREATE_REQUEST:
             return {
                 ...state,
